@@ -41,7 +41,7 @@ class Order extends MY_Controller {
 		$and = "c.id NOT IN (SELECT cdrr_id FROM escm_orders GROUP BY cdrr_id) AND m.id NOT IN (SELECT maps_id FROM escm_maps GROUP BY maps_id)";
 		if($type=="kp"){
 			$facility_table = "escm_facility";
-			$and = "c.id IN (SELECT cdrr_id FROM escm_orders GROUP BY cdrr_id) AND m.id IN (SELECT maps_id FROM escm_maps GROUP BY maps_id)";
+			$and = "c.id NOT IN (SELECT cdrr_id FROM escm_orders GROUP BY cdrr_id) AND m.id NOT IN (SELECT maps_id FROM escm_maps GROUP BY maps_id)";
 		}
 		$sql = "SELECT c.id,m.id as map,IF(c.code='D-CDRR',CONCAT('D-CDRR#',c.id),CONCAT('F-CDRR#',c.id)) as cdrr_id,IF(m.code='D-MAPS',CONCAT('D-MAPS#',m.id),CONCAT('F-MAPS#',m.id)) as maps_id,c.period_begin,c.status as status_name,sf.name as facility_name,'options'
 					FROM cdrr c
@@ -61,8 +61,8 @@ class Order extends MY_Controller {
 		$results = $query -> result_array();
 		$temp = array();
 		foreach($results as $counter => $order){  
-        	foreach ($order as $key => $value) {
-        		if($key=="id" || $key=="map"){
+			foreach ($order as $key => $value) {
+				if($key=="id" || $key=="map"){
         			continue;
         		}
         		if ($key == "options") {
@@ -72,6 +72,7 @@ class Order extends MY_Controller {
         			$value = $link;
         		}
         		$temp [$counter][] = $value;
+        		
         	}
            
         }
